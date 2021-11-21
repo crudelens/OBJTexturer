@@ -1,7 +1,7 @@
 from setuptools import setup
 
 APP = ['main.py']
-DATA_FILES = ['blendloc.txt','finalloc.txt','images.txt','objfile.txt','blendscript.py','qml','Images','Lovelo']
+DATA_FILES = ['blendloc.txt','finalloc.txt','images.txt','objfile.txt','blendscript.py','qml','Images','Lovelo','blendscript2.py']
 OPTIONS = {'argv_emulation': True,
             'packages': ['PySide2']}
 

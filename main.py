@@ -62,23 +62,22 @@ class MainWindow(QObject):
             except:
                 print("Image Unsupported")
     
-    @Slot(str,str)
-    def render(self,name,blenddir):
+    @Slot(str)
+    def render(self,blenddir):
         self.MYDIR=f"{Path(__file__).parent.absolute()}"
         print(self.MYDIR)
         blend=Path(blenddir.lstrip("file:"))
-        sudo_password = name
-        p = subprocess.Popen(['sudo', '-S', f"{blend}/Contents/MacOS/Blender","-b","-P", f"{self.MYDIR}/blendscript.py"], stderr=subprocess.PIPE, stdout=subprocess.PIPE,  stdin=subprocess.PIPE)
-        try:
-            out, err = p.communicate(input=(sudo_password+'\n').encode(),timeout=5)
-            print(out)
-
-        except subprocess.TimeoutExpired:
-            p.kill()
-            print('error')
-        
-        #print(subprocess.run(["sudo","-S","<<<","Riybro11",f"{blend}/Contents/MacOS/Blender","-b","-P", f"{self.MYDIR}/blendscript.py"]))
+        subprocess.run([f"{blend}/Contents/MacOS/Blender","-b","-P", f"{self.MYDIR}/blendscript2.py"])
     
+    @Slot(str)
+    def render2(self,blenddir):
+        self.MYDIR=f"{Path(__file__).parent.absolute()}"
+        print(self.MYDIR)
+        blend=Path(blenddir.lstrip("file:"))
+        p = subprocess.Popen([f"{blend}/Contents/MacOS/Blender","-b","-P", f"{self.MYDIR}/blendscript.py"], stderr=subprocess.PIPE, stdout=subprocess.PIPE,  stdin=subprocess.PIPE)
+        output = p.stdout.read()
+        print(output)
+
     @Slot(str)
     def locwriter(self,loc):
         file4 = open("finalloc.txt","w+")

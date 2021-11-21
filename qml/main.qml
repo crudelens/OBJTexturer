@@ -324,16 +324,20 @@ Window {
         }
        CameraBtn{
            id:renderimages
+           y: 880
+           width: 311
+           height: 40
            text: qsTr("Render Images")
            anchors.left: parent.left
            anchors.bottom: parent.bottom
-           anchors.leftMargin: 250
+           colorPressed: "#95286e"
+           anchors.leftMargin: 125
            textdef: qsTr("Render Images")
            checkable: false
-           anchors.bottomMargin: 50
+           anchors.bottomMargin: 80
            visible: false
            onPressed: {
-                finfileDialog.open()
+               finfileDialog.open()
             }
 
        }
@@ -344,7 +348,7 @@ Window {
             folder: shortcuts.home
             onAccepted: {
                 backend.locwriter(finfileDialog.fileUrls)
-                pwDialog.open()
+                backend.render(blenderdir.text)
                 //backend.render(openobj.text,blenderdir.text)
             }
             onRejected: {
@@ -352,49 +356,49 @@ Window {
             }
        }
 
-       Dialog {
-            id: pwDialog
-            title: "Enter Computer Password"
-            height: 150
-            width: 500
-            standardButtons: Dialog.Ok | Dialog.Cancel
-                Rectangle {
-                id: rectangle
-                anchors.fill: parent
-                TextField {
-                    id: newFolderInput
-                    width: parent.width * 0.5
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    echoMode: TextInput.PasswordEchoOnEdit
-                }
-            }
-            onAccepted: {
-                backend.render(newFolderInput.text,blenderdir.text)
-            }
-       }
 
         CameraBtn {
             id: deleteimages
             visible: false
             text: qsTr("Render Images")
-            anchors.right: parent.right
             anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
             colorPressed: "#f205bc"
             colorMouseOver: "#a505f2"
             colorDefault: "#89326c"
-            anchors.rightMargin: 250
             textdef: qsTr("Delete All Images")
-            anchors.bottomMargin: 50
+            anchors.bottomMargin: 20
             checkable: false
             onPressed: {
                 for(var i = grid.children.length; i > 0 ; i--) {
-                        console.log("destroying: " + i)
-                        grid.children[i-1].destroy()
-                      }
+                    console.log("destroying: " + i)
+                    grid.children[i-1].destroy()
+                }
                 renderimages.visible=false;
+                renderobj.visible=false;
                 deleteimages.visible=false;
                 backend.delimg()
+            }
+        }
+
+        CameraBtn {
+            id: renderobj
+            y: 880
+            width: 311
+            height: 40
+            visible: false
+            text: qsTr("Save OBJs")
+            anchors.left: parent.left
+            anchors.bottom: parent.bottom
+            colorPressed: "#95286e"
+            colorMouseOver: "#e95f00"
+            colorDefault: "#ff9800"
+            checkable: false
+            textdef: qsTr("Save OBJs")
+            anchors.bottomMargin: 80
+            anchors.leftMargin: 572
+            onPressed: {
+               backend.render2(blenderdir.text)
             }
         }
     }
@@ -434,6 +438,7 @@ Window {
                 console.log("Error creating object");
             } else{
                 renderimages.visible=true;
+                renderobj.visible=true;
                 deleteimages.visible=true;
             }
         }
@@ -446,6 +451,6 @@ Window {
 Designer {
     D{i:0;formeditorZoom:0.66}D{i:1}D{i:2}D{i:4}D{i:6}D{i:7}D{i:8}D{i:9}D{i:10}D{i:11}
 D{i:12}D{i:14}D{i:15}D{i:16}D{i:17}D{i:18}D{i:20}D{i:21}D{i:22}D{i:23}D{i:25}D{i:24}
-D{i:26}D{i:27}D{i:28}D{i:3}D{i:29}
+D{i:26}D{i:27}D{i:28}D{i:29}D{i:3}D{i:30}
 }
 ##^##*/
