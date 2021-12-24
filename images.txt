@@ -1,4 +1,7 @@
-file:///Users/ayushyadav/AYUSH/Pinjara bts/20210912_081346070_iOS.jpg 
-file:///Users/ayushyadav/AYUSH/Pinjara bts/20210912_081401400_iOS.jpg 
-file:///Users/ayushyadav/AYUSH/Pinjara bts/20210912_081429300_iOS.jpg 
-file:///Users/ayushyadav/AYUSH/Pinjara bts/20210912_081549710_iOS.jpg 
+/Users/ayushyadav/Downloads/obj/Images/s-4(4).png 
+/Users/ayushyadav/Downloads/obj/Images/wireframe2.png 
+/Users/ayushyadav/Downloads/obj/Images/s-4(5).png 
+/Users/ayushyadav/Downloads/obj/Images/wireframe.png 
+/Users/ayushyadav/Downloads/obj/Images/s-4(2).png 
+/Users/ayushyadav/Downloads/obj/Images/s-4(3).png 
+/Users/ayushyadav/Downloads/obj/Images/s-4.png 

@@ -3,73 +3,90 @@ import os
 from pathlib import Path
 import sys
 from typing import List
-from PySide2.QtCore import QObject,Slot,Signal
 import subprocess
-from PySide2.QtGui import QGuiApplication
-from PySide2.QtQml import QQmlApplicationEngine
 import getpass
 list2=[".bmp",".tif", ".tiff",".hdr",".exr",".dpx",".cin",".tga",".j2c",".jp2",".jpg",".jpeg",".png",".bw",".sgi",".rgb",".bmp"]
-class MainWindow(QObject):
-    def __init__(self):
-        QObject.__init__(self)
-
-    setName = Signal(str)
+class MainWindow:
     
-    @Slot(str)
     def blendfinder(self,loc):
         file1 = open("blendloc.txt","w+")
         location=Path(loc)
         file1.write(str(location))
         file1.close()
         compareloc=os.path.basename(location)
+        print(compareloc)
         if compareloc.lower()== "blender.exe" or compareloc.lower() == "blender.app" :
-            self.setName.emit(loc)
-        elif loc=="":
-            pass
+            print("Preset Blender Location:" + loc)
+            objloc=input("Input OBJ File: ")
+            objloc=objloc.strip("'")
+            self.objfinder(objloc)
         else:
-            self.setName.emit("INVALID BLENDER DIRECTORY")
+            print("INVALID BLENDER DIRECTORY")
+            loc2=input("Enter Blender Directory:")
+            location2=loc2.strip("'")
+            self.blendfinder(location2)
 
-    setObj = Signal(str)
-
-    @Slot(str)
     def objfinder(self,loc):
         location=Path(loc)
         filename, file_extension = os.path.splitext(location)
-        print(file_extension)
         if file_extension == ".obj" or file_extension == ".OBJ" :
-            self.setObj.emit(loc)
-            file3 = open("objfile.txt","w+")
-            file3.write(loc)
-            file3.close()
-        else:
-            self.setObj.emit("INVALID OBJECT DIRECTORY")
+            print(filename + " accepted")
+            file4 = open("objfile.txt","w")
+            file4.write(loc)
+            file4.close()
+            imgloc= input("Input Image Directory: ")
+            imgloc=imgloc.strip("'")
+            if os.path.isdir(imgloc):
+                imglist=os.listdir(imgloc)
+                self.imgfinder(imgloc,imglist)
+            else:
+                print("Invalid Image Directory. Make sure input is a folder.")
+                self.objfinder(loc)
 
-    setImg = Signal(str)
-    @Slot(str)
-    def imgfinder(self,imgloc):
-        listimg=list(imgloc.split(","))
+        else:
+            print("INVALID OBJECT DIRECTORY, make sure the file extension is .obj")
+            loc2=input("Input OBJ File: ")
+            location2=loc2.strip("'")
+            self.objfinder(location2)
+
+    def imgfinder(self,imgloc,imglist):
+        listimg=imglist
         for i in listimg:
             try:
+                i=os.path.join(imgloc,i)
                 filename, file_extension = os.path.splitext(i)
                 if file_extension in list2:
-                    self.setImg.emit(i)
+                    print(f"Image {i} Added.")
                     file2 = open("images.txt","a+")
                     file2.write(f"{str(i)} \n")
-                    file2.close()
+                    file2.close() 
                 else:
-                    listimg.remove(i)
-                    
+                    listimg.remove(i)       
             except:
-                print("Image Unsupported")
+                print(f"Image {i} Unsupported!!")
+        if os.stat("images.txt").st_size != 0:
+            finalloc=input("Output Directory: ")
+            finalloc=finalloc.strip("'")
+            if os.path.isdir(finalloc):
+                self.locwriter(finalloc)
+            else:
+                print("Output Directory not found. Please try again.")
+                self.imgfinder(imgloc,imglist)
+
+        else:
+            print("No valid images found in directory")
+
+
+        
     
-    @Slot(str)
+
     def render(self,blenddir):
         self.MYDIR=f"{Path(__file__).parent.absolute()}"
         print(self.MYDIR)
         blend=Path(blenddir.lstrip("file:"))
         subprocess.run([f"{blend}/Contents/MacOS/Blender","-b","-P", f"{self.MYDIR}/blendscript2.py"])
     
-    @Slot(str)
+
     def render2(self,blenddir):
         self.MYDIR=f"{Path(__file__).parent.absolute()}"
         print(self.MYDIR)
@@ -78,26 +95,33 @@ class MainWindow(QObject):
         output = p.stdout.read()
         print(output)
 
-    @Slot(str)
     def locwriter(self,loc):
         file4 = open("finalloc.txt","w+")
         file4.write(loc)
         file4.close()
+        rendinp=input("Do you want to export OBJ (type: obj) or turntable (type: tt)? ")
+        file = open("blendloc.txt", "r+")
+        blendloc = file.read()
+        print(rendinp)
+        if rendinp.lower()=="obj":
+            self.render2(blendloc)
+        elif rendinp.lower()=="tt":
+            self.render(blendloc)
+        else:
+            print("Unrecognised input. Please try again")
+            self.locwriter(loc)
+            
+        
 
-    @Slot()
+
     def delimg(self):
         file2 = open("images.txt","w+")
         file2.truncate(0)
         
 
 if __name__ == "__main__":
-    app = QGuiApplication(sys.argv)
-    engine = QQmlApplicationEngine()
-    main = MainWindow()
-    engine.rootContext().setContextProperty("backend",main)
-    engine.load(os.fspath(Path(__file__).resolve().parent / "qml/main.qml"))
     file1 = open("blendloc.txt","r+")
-    blenddir=file1.read()
+    loc=file1.read()
     file1.close()
     file2 = open("images.txt","w+")
     file2.truncate(0)
@@ -105,7 +129,10 @@ if __name__ == "__main__":
     file3 = open("objfile.txt","w+")
     file3.truncate(0)
     file3.close()
-    main.blendfinder(blenddir)
-    if not engine.rootObjects():
-        sys.exit(-1)
-    sys.exit(app.exec_())
+    location=loc.strip("'")
+    print(location)
+    m=MainWindow()
+    m.blendfinder(location)
+    
+
+

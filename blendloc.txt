@@ -1,1 +1,1 @@
-file:/Applications/Blender.app
+/Applications/Blender.app
