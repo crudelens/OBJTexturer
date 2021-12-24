@@ -18,12 +18,14 @@ class MainWindow:
         if compareloc.lower()== "blender.exe" or compareloc.lower() == "blender.app" :
             print("Preset Blender Location:" + loc)
             objloc=input("Input OBJ File: ")
+            objloc=objloc.strip()
             objloc=objloc.strip("'")
             self.objfinder(objloc)
         else:
             print("INVALID BLENDER DIRECTORY")
             loc2=input("Enter Blender Directory:")
-            location2=loc2.strip("'")
+            location2=loc2.strip()
+            location2=location2.strip("'")
             self.blendfinder(location2)
 
     def objfinder(self,loc):
@@ -35,6 +37,7 @@ class MainWindow:
             file4.write(loc)
             file4.close()
             imgloc= input("Input Image Directory: ")
+            imgloc=imgloc.strip()
             imgloc=imgloc.strip("'")
             if os.path.isdir(imgloc):
                 imglist=os.listdir(imgloc)
@@ -46,7 +49,8 @@ class MainWindow:
         else:
             print("INVALID OBJECT DIRECTORY, make sure the file extension is .obj")
             loc2=input("Input OBJ File: ")
-            location2=loc2.strip("'")
+            location2=loc2.strip()
+            location2=location2.strip("'")
             self.objfinder(location2)
 
     def imgfinder(self,imgloc,imglist):
@@ -66,6 +70,7 @@ class MainWindow:
                 print(f"Image {i} Unsupported!!")
         if os.stat("images.txt").st_size != 0:
             finalloc=input("Output Directory: ")
+            finalloc=finalloc.strip()
             finalloc=finalloc.strip("'")
             if os.path.isdir(finalloc):
                 self.locwriter(finalloc)
@@ -129,7 +134,8 @@ if __name__ == "__main__":
     file3 = open("objfile.txt","w+")
     file3.truncate(0)
     file3.close()
-    location=loc.strip("'")
+    location=loc.strip()
+    location=location.strip("'")
     print(location)
     m=MainWindow()
     m.blendfinder(location)
